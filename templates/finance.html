@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    /* خلفية متدرجة ناعمة تبرز تأثير الزجاج */
+    body {
+        background: radial-gradient(circle at top right, #eef2f3, #8e9eab);
+        min-height: 100vh;
+    }
+
+    /* تأثير الظهور التدريجي عند الفتح */
+    .fade-in-up {
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* القاعدة الأساسية للتصميم الزجاجي */
+    .glass-effect {
+        background: rgba(255, 255, 255, 0.25) !important;
+        backdrop-filter: blur(12px) saturate(180%);
+        -webkit-backdrop-filter: blur(12px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 25px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+    }
+
+    /* الكروت الزجاجية العلوية */
+    .stat-card {
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .stat-card:hover {
+        transform: scale(1.05);
+        background: rgba(255, 255, 255, 0.4) !important;
+    }
+
+    /* تصميم الجدول الزجاجي المطور */
+    .glass-table-container {
+        border-radius: 25px;
+        overflow: hidden;
+        margin-top: 30px;
+    }
+
+    .glass-table {
+        margin-bottom: 0;
+        color: #1A237E;
+    }
+
+    .glass-table thead tr {
+        background: rgba(26, 35, 126, 0.1);
+        border: none;
+    }
+
+    .glass-table th {
+        padding: 20px !important;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+        border: none !important;
+    }
+
+    .glass-table td {
+        padding: 18px 20px !important;
+        vertical-align: middle;
+        background: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        color: #333;
+    }
+
+    .glass-table tbody tr:last-child td {
+        border: none;
+    }
+
+    .glass-table tbody tr {
+        transition: all 0.3s ease;
+    }
+
+    .glass-table tbody tr:hover {
+        background: rgba(255, 255, 255, 0.4);
+        cursor: pointer;
+    }
+
+    /* أيقونات الكروت */
+    .icon-circle {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 18px;
+        margin-bottom: 15px;
+    }
+
+    /* الألوان الخاصة بالشعار */
+    .text-navy { color: #1A237E; }
+    .text-gold { color: #D4AF37; }
+    .bg-gold { background: #D4AF37; }
+    .bg-navy { background: #1A237E; }
+
+    .border-gold-line { border-right: 8px solid #D4AF37; }
+    .border-navy-line { border-right: 8px solid #1A237E; }
+    .border-green-line { border-right: 8px solid #28a745; }
+
+</style>
+
+<div class="container-fluid py-5 text-end fade-in-up" dir="rtl">
+    <div class="d-flex justify-content-between align-items-center mb-5 px-3">
+        <div>
+            <h1 class="display-5 fw-bold text-navy mb-0">المحفظة المالية</h1>
+            <p class="text-muted">مراقبة حية للتدفقات النقدية للمؤسسة الرقمية</p>
+        </div>
+        <div class="glass-effect p-3 px-4">
+            <span class="fw-bold text-navy"><i class="fas fa-clock ms-2"></i> {{ "now"|date:"d M Y" }}</span>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="glass-effect stat-card p-4 h-100 border-green-line">
+                <div class="icon-circle bg-success text-white shadow-sm">
+                    <i class="fas fa-arrow-down fa-lg"></i>
+                </div>
+                <h6 class="text-muted fw-bold">إجمالي الإيرادات</h6>
+                <h2 class="fw-bold text-success">{{ total_income }} <small class="fs-6">د.ل</small></h2>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="glass-effect stat-card p-4 h-100 border-navy-line">
+                <div class="icon-circle bg-navy text-white shadow-sm">
+                    <i class="fas fa-receipt fa-lg"></i>
+                </div>
+                <h6 class="text-muted fw-bold">إجمالي المصاريف</h6>
+                <h2 class="fw-bold text-navy">{{ total_expenses }} <small class="fs-6">د.ل</small></h2>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="glass-effect stat-card p-4 h-100 border-gold-line">
+                <div class="icon-circle bg-gold text-white shadow-sm">
+                    <i class="fas fa-chart-pie fa-lg"></i>
+                </div>
+                <h6 class="text-muted fw-bold">صافي الأرباح</h6>
+                <h2 class="fw-bold {% if net_profit >= 0 %}text-gold{% else %}text-danger{% endif %}">
+                    {{ net_profit }} <small class="fs-6">د.ل</small>
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-table-container glass-effect mt-5">
+        <div class="p-4 d-flex justify-content-between align-items-center border-bottom border-light">
+            <h4 class="fw-bold text-navy m-0"><i class="fas fa-list-ul ms-2 text-gold"></i> سجل الحركات المالية الأخيرة</h4>
+            <a href="{% url 'purchases_list' %}" class="btn btn-dark rounded-pill px-4 btn-sm shadow-sm">إضافة سجل جديد</a>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table glass-table">
+                <thead>
+                    <tr>
+                        <th><i class="calendar-day ms-2"></i>التاريخ</th>
+                        <th>بيان العملية</th>
+                        <th>القيمة النقدية</th>
+                        <th class="text-center">التصنيف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in purchases %}
+                    <tr>
+                        <td class="text-muted">{{ item.date|date:"d-m-Y" }}</td>
+                        <td class="fw-bold text-navy">
+                            <i class="fas fa-shopping-cart ms-2 text-muted" style="font-size: 0.8rem;"></i>
+                            {{ item.item_name }}
+                        </td>
+                        <td class="text-danger fw-bold">{{ item.price }}- د.ل</td>
+                        <td class="text-center">
+                            <span class="badge rounded-pill bg-danger bg-opacity-10 text-danger p-2 px-3 border border-danger border-opacity-25">
+                                مصروفات تشغيلية
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-5">
+                            <img src="https://cdn-icons-png.flaticon.com/512/4076/4076432.png" width="60" class="opacity-25 mb-3"><br>
+                            <span class="text-muted">لا توجد حركات مالية مسجلة في النظام حالياً</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

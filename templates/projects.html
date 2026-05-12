@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    /* تصميم النافذة المنبثقة (Modal) */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(8px);
+        z-index: 2000;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        width: 600px; /* تم تكبير العرض لاستيعاب الوصف */
+        box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        animation: slideIn 0.3s ease-out;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    @keyframes slideIn {
+        from { transform: translateY(-50px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #003366;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #eee;
+        border-radius: 10px;
+        font-family: 'Cairo', sans-serif;
+        transition: 0.3s;
+    }
+
+    .form-control:focus {
+        border-color: #FFD700;
+        outline: none;
+    }
+
+    .btn-submit {
+        background: #003366;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+        width: 100%;
+        font-size: 1.1rem;
+        margin-top: 10px;
+    }
+
+    .btn-close-modal {
+        background: #f8f9fa;
+        color: #333;
+        border: 1px solid #ddd;
+        padding: 8px 15px;
+        border-radius: 8px;
+        float: left;
+        cursor: pointer;
+        font-family: 'Cairo';
+    }
+
+    .project-row:hover {
+        background-color: #fcfcfc !important;
+    }
+    
+    .project-img {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        object-fit: cover;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .action-btn {
+        text-decoration: none;
+        font-size: 1.1rem;
+        transition: 0.2s;
+        margin: 0 5px;
+    }
+    
+    .edit-btn { color: #0288d1; }
+    .edit-btn:hover { color: #01579b; transform: scale(1.1); }
+    
+    .delete-btn { color: #d32f2f; }
+    .delete-btn:hover { color: #b71c1c; transform: scale(1.1); }
+
+    .desc-text {
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 0.9rem;
+        color: #777;
+    }
+</style>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <h2 style="color: #003366; margin: 0;"><i class="fas fa-folder-open"></i> إدارة مشاريع المؤسسة</h2>
+    <button onclick="toggleModal()" style="background: #003366; color: white; border: none; padding: 12px 25px; border-radius: 12px; cursor: pointer; font-weight: 600; font-family: 'Cairo'; display: flex; align-items: center; gap: 10px;">
+        <i class="fas fa-plus-circle"></i> إضافة مشروع جديد
+    </button>
+</div>
+
+<div class="card" style="background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden;">
+    <table style="width: 100%; border-collapse: collapse; text-align: right;">
+        <thead>
+            <tr style="background: #f8f9fa; border-bottom: 2px solid #eee;">
+                <th style="padding: 18px;">المشروع</th>
+                <th style="padding: 18px;">التصنيف</th> <th style="padding: 18px;">الوصف</th> <th style="padding: 18px;">الحالة</th>
+                <th style="padding: 18px;">تاريخ البدء</th>
+                <th style="padding: 18px; text-align: center;">إجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for project in projects %}
+            <tr class="project-row" style="border-bottom: 1px solid #f1f1f1;">
+                <td style="padding: 15px;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        {% if project.image %}
+                            <img src="{{ project.image.url }}" class="project-img" alt="صورة المشروع">
+                        {% else %}
+                            <div class="project-img" style="background: #eee; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-image text-muted"></i>
+                            </div>
+                        {% endif %}
+                        <span style="font-weight: 600; color: #003366;">{{ project.name }}</span>
+                    </div>
+                </td>
+
+                <td style="padding: 15px;">
+                    <span style="color: #555;">{{ project.category|default:"غير مصنف" }}</span>
+                </td>
+
+                <td style="padding: 15px;">
+                    <div class="desc-text" title="{{ project.description }}">{{ project.description|default:"لا يوجد وصف" }}</div>
+                </td>
+                
+                <td style="padding: 15px;">
+                    {% if project.status == 'completed' or project.status == 'مكتمل' %}
+                        <span style="background: #e8f5e9; color: #2e7d32; padding: 6px 12px; border-radius: 50px; font-size: 0.85rem; font-weight: bold;">مكتمل</span>
+                    {% elif project.status == 'ongoing' or project.status == 'جاري العمل' %}
+                        <span style="background: #fff3e0; color: #ef6c00; padding: 6px 12px; border-radius: 50px; font-size: 0.85rem; font-weight: bold;">جاري العمل</span>
+                    {% else %}
+                        <span style="background: #eceff1; color: #455a64; padding: 6px 12px; border-radius: 50px; font-size: 0.85rem; font-weight: bold;">{{ project.status }}</span>
+                    {% endif %}
+                </td>
+                
+                <td style="padding: 15px; color: #666;">{{ project.start_date }}</td>
+                
+                <td style="padding: 15px; text-align: center;">
+                    <div style="display: flex; justify-content: center; gap: 15px;">
+                        <a href="{% url 'edit_project' project.id %}" class="action-btn edit-btn" title="تعديل">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{% url 'delete_project' project.id %}" class="action-btn delete-btn" title="حذف" onclick="return confirm('هل أنت متأكد من حذف مشروع: {{ project.name }}؟')">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="padding: 50px; text-align: center; color: #999;">
+                    <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 15px; display: block; opacity: 0.2;"></i>
+                    لا توجد مشاريع مضافة حالياً.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="modal-overlay" id="addProjectModal">
+    <div class="modal-content">
+        <button class="btn-close-modal" onclick="toggleModal()">إغلاق</button>
+        <h3 style="color: #003366; margin-top: 0; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-project-diagram"></i> إضافة بيانات المشروع
+        </h3>
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+        
+        <form method="POST" action="{% url 'projects_list' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label>اسم المشروع</label>
+                    <input type="text" name="name" class="form-control" placeholder="اسم المشروع" required>
+                </div>
+                <div class="form-group">
+                    <label>تصنيف المشروع</label>
+                    <input type="text" name="category" class="form-control" placeholder="مثل: برمجة، هندسة..">
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label>تاريخ البدء</label>
+                    <input type="date" name="start_date" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>حالة المشروع</label>
+                    <select name="status" class="form-control">
+                        <option value="جاري العمل">جاري العمل</option>
+                        <option value="مكتمل">مكتمل</option>
+                        <option value="pending">قيد الانتظار</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>وصف المشروع</label>
+                <textarea name="description" class="form-control" rows="3" placeholder="اكتب تفاصيل المشروع هنا..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>صورة المشروع</label>
+                <input type="file" name="project_image" class="form-control" accept="image/*">
+            </div>
+
+            <button type="submit" class="btn-submit">حفظ المشروع في المنظومة</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function toggleModal() {
+        const modal = document.getElementById('addProjectModal');
+        modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('addProjectModal');
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
+{% endblock %}

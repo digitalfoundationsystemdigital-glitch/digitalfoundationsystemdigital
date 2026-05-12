@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    .reports-wrapper {
+        background: linear-gradient(135deg, #f5f7fa 0%, #cbd5e0 100%);
+        min-height: 100vh;
+        padding: 40px 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* كروت زجاجية احترافية */
+    .glass-report-card {
+        background: rgba(255, 255, 255, 0.45);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border-radius: 25px;
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease;
+        height: 100%;
+    }
+
+    .glass-report-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .stat-header {
+        color: #1A237E;
+        font-weight: 800;
+        border-bottom: 2px solid rgba(26, 35, 126, 0.1);
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* عدادات الإحصائيات */
+    .stat-row {
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 15px;
+        margin-bottom: 12px;
+        padding: 12px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .badge-custom {
+        padding: 8px 15px;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: bold;
+    }
+
+    .chart-placeholder {
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        margin-top: 15px;
+    }
+
+    .btn-export {
+        background: linear-gradient(45deg, #1A237E, #3949ab);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 25px;
+        font-weight: bold;
+        box-shadow: 0 4px 15px rgba(26, 35, 126, 0.3);
+    }
+</style>
+
+<div class="reports-wrapper text-end" dir="rtl">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h2 style="color: #1A237E; font-weight: 900;">التقارير العامة ونمو الأعمال</h2>
+                <p class="text-muted">تحليل شامل لأداء المؤسسة المالي والتشغيلي</p>
+            </div>
+            <button class="btn btn-export" onclick="window.print()">
+                <i class="fas fa-file-pdf ms-2"></i> طباعة التقرير الشامل
+            </button>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="glass-report-card p-4">
+                    <div class="stat-header">
+                        <span><i class="fas fa-shopping-cart ms-2"></i> إحصائيات الطلبات</span>
+                        <span class="text-primary small">نشط حالياً</span>
+                    </div>
+                    {% for stat in order_stats %}
+                    <div class="stat-row">
+                        <span class="fw-bold">{{ stat.status }}</span>
+                        <span class="badge bg-primary badge-custom">{{ stat.count }}</span>
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-4 text-muted">لا توجد بيانات متاحة</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="glass-report-card p-4">
+                    <div class="stat-header">
+                        <span><i class="fas fa-project-diagram ms-2"></i> المشاريع الكبرى</span>
+                    </div>
+                    {% for p_stat in project_stats %}
+                    <div class="stat-row">
+                        <span class="fw-bold">{{ p_stat.status }}</span>
+                        <span class="badge bg-success badge-custom">{{ p_stat.count }}</span>
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-4 text-muted">لا توجد بيانات للمشاريع</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-12">
+                <div class="glass-report-card p-4">
+                    <div class="stat-header">
+                        <span><i class="fas fa-wallet ms-2"></i> ملخص المحفظة المالية</span>
+                    </div>
+                    <div class="text-center my-3">
+                        <h3 class="fw-bold text-success">1000 د.ل</h3>
+                        <small class="text-muted">إجمالي الإيرادات الحالية</small>
+                    </div>
+                    <div class="stat-row border-danger border-2">
+                        <span class="text-danger fw-bold">إجمالي المصاريف</span>
+                        <span class="text-danger fw-bold">900 د.ل</span>
+                    </div>
+                    <div class="stat-row border-success border-2 bg-success bg-opacity-10">
+                        <span class="text-success fw-bold">صافي الأرباح</span>
+                        <span class="text-success fw-bold">100 د.ل</span>
+                    </div>
+                    <div class="chart-placeholder">
+                        <i class="fas fa-chart-pie fa-3x opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="glass-report-card p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="fw-bold"><i class="fas fa-users ms-2"></i> حالة الكادر الوظيفي</h5>
+                        <span class="badge bg-info p-2 px-3">إجمالي الرواتب: 500 د.ل</span>
+                    </div>
+                    <hr>
+                    <div class="row text-center mt-3">
+                        <div class="col-md-4">
+                            <h4 class="fw-bold">1</h4>
+                            <p class="text-muted small">موظفين "على رأس العمل"</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h4 class="fw-bold">0</h4>
+                            <p class="text-muted small">موظفين في إجازة</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h4 class="fw-bold">2026-05-12</h4>
+                            <p class="text-muted small">آخر تاريخ تعيين</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

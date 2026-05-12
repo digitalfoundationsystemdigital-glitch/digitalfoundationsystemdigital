@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header class="mb-5">
+    <h1 class="fw-bold" style="color: var(--primary-blue);">أهلاً بك في المنظومة الرقمية</h1>
+    <p class="text-muted">إليك نظرة سريعة على أداء المؤسسة اليوم.</p>
+</header>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="glass-panel p-4 text-center">
+            <div style="color: #003366; font-size: 2rem;" class="mb-2"><i class="fas fa-project-diagram"></i></div>
+            <h6 class="text-muted">إجمالي المشاريع</h6>
+            <h2 class="fw-bold">{{ projects_count }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-panel p-4 text-center">
+            <div style="color: #c0392b; font-size: 2rem;" class="mb-2"><i class="fas fa-user-tie"></i></div>
+            <h6 class="text-muted">الموظفين</h6>
+            <h2 class="fw-bold">{{ employees_count }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-panel p-4 text-center">
+            <div style="color: #27ae60; font-size: 2rem;" class="mb-2"><i class="fas fa-wallet"></i></div>
+            <h6 class="text-muted">إجمالي المالية</h6>
+            <h2 class="fw-bold">{{ total_finance }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-panel p-4 text-center">
+            <div style="color: #f39c12; font-size: 2rem;" class="mb-2"><i class="fas fa-shopping-cart"></i></div>
+            <h6 class="text-muted">الطلبات (الأصناف)</h6>
+            <h2 class="fw-bold">{{ orders_count }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-6">
+        <div class="glass-panel p-4 d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <div style="background: rgba(0, 51, 102, 0.1); padding: 15px; border-radius: 15px;" class="me-3">
+                    <i class="fas fa-user-friends fa-2x" style="color: var(--primary-blue);"></i>
+                </div>
+                <div>
+                    <h6 class="text-muted mb-0">قاعدة بيانات الزبائن</h6>
+                    <h3 class="fw-bold mb-0">{{ customers_count }} زبون</h3>
+                </div>
+            </div>
+            <a href="{% url 'customers_list' %}" class="btn btn-sm btn-outline-primary rounded-pill">عرض الكل</a>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="glass-panel p-4 d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <div style="background: rgba(108, 117, 125, 0.1); padding: 15px; border-radius: 15px;" class="me-3">
+                    <i class="fas fa-archive fa-2x" style="color: #6c757d;"></i>
+                </div>
+                <div>
+                    <h6 class="text-muted mb-0">الملفات المؤرشفة</h6>
+                    <h3 class="fw-bold mb-0">{{ archives_count }} ملف</h3>
+                </div>
+            </div>
+            <a href="{% url 'digital_archive' %}" class="btn btn-sm btn-outline-secondary rounded-pill">دخول الأرشيف</a>
+        </div>
+    </div>
+</div>
+
+      
+{% endblock %}

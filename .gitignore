@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Django local files
+db.sqlite3
+*.sqlite3
+media/
+staticfiles/
+
+# Local settings and secrets
+.env
+.env.*
+!.env.example
+
+# Logs and temporary files
+*.log
+runserver.*.log
+
+# Stray empty root files
+/urls.py
+`
+
+# Editors and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

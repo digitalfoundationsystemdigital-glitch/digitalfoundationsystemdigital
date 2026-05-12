@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    /* تحسين الخلفية العامة */
+    .main-wrapper {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+        min-height: 100vh;
+        padding: 30px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* كرت إحصائية الرواتب الزجاجي (نفس نمط المالية) */
+    .glass-stat-card {
+        background: rgba(255, 255, 255, 0.45);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.08);
+        padding: 20px 30px;
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    /* لوحة الجدول الزجاجية */
+    .glass-panel {
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border-radius: 25px;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+        padding: 20px;
+    }
+
+    /* تنسيق الجدول المنظم */
+    .compact-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .compact-table thead th {
+        background: rgba(26, 35, 126, 0.08); 
+        color: #1A237E; /* اللون النيلي الموحد */
+        font-weight: 800;
+        font-size: 0.9rem;
+        padding: 15px;
+        border-bottom: 2px solid rgba(26, 35, 126, 0.15);
+        text-align: right;
+    }
+
+    .compact-table tbody td {
+        padding: 14px 15px;
+        font-size: 0.95rem;
+        color: #2c3e50;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        vertical-align: middle;
+    }
+
+    /* تعديل المسمى الوظيفي ليكون واضحاً جداً */
+    .job-badge {
+        background: rgba(26, 35, 126, 0.1); /* خلفية نيلية فاتحة */
+        color: #1A237E !important; /* نص نيلي غامق وواضح */
+        padding: 5px 12px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        border: 1px solid rgba(26, 35, 126, 0.1);
+    }
+
+    .status-pill {
+        padding: 4px 12px;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    .status-active { background: #e6fcf5; color: #0ca678; }
+    .status-inactive { background: #fff5f5; color: #e03131; }
+
+    .btn-finance {
+        background: #1A237E;
+        color: white;
+        border-radius: 12px;
+        padding: 10px 25px;
+        border: none;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+    .btn-finance:hover {
+        background: #283593;
+        transform: translateY(-2px);
+        color: white;
+    }
+
+    .icon-box {
+        width: 45px;
+        height: 45px;
+        background: #1A237E;
+        color: white;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 15px;
+    }
+</style>
+
+<div class="main-wrapper text-end" dir="rtl">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 style="color: #1A237E; font-weight: 800; margin-bottom: 5px;">إدارة الموارد البشرية</h3>
+            <p class="text-muted small">تنظيم بيانات الموظفين والالتزامات المالية</p>
+        </div>
+        <button class="btn btn-finance shadow-sm" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+            <i class="fas fa-plus-circle ms-1"></i> إضافة موظف جديد
+        </button>
+    </div>
+
+    <div class="glass-stat-card">
+        <div class="icon-box shadow-sm">
+            <i class="fas fa-users fa-lg"></i>
+        </div>
+        <div>
+            <span class="text-muted small d-block mb-1">إجمالي الرواتب الشهرية</span>
+            <h4 class="mb-0" style="color: #1A237E; font-weight: 800;">{{ total_salaries|default:"0" }} <small class="fs-6">د.ل</small></h4>
+        </div>
+    </div>
+
+    <div class="glass-panel">
+        <div class="table-responsive">
+            <table class="compact-table">
+                <thead>
+                    <tr>
+                        <th style="border-radius: 0 15px 0 0;">اسم الموظف</th>
+                        <th>المسمى الوظيفي</th>
+                        <th>المرتب الشھري</th>
+                        <th>تاريخ التعيين</th>
+                        <th class="text-center" style="border-radius: 15px 0 0 0;">الحالة</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for emp in employees %}
+                    <tr>
+                        <td class="fw-bold text-dark">{{ emp.name }}</td>
+                        <td>
+                            <span class="job-badge">
+                                {{ emp.position }} </span>
+                        </td>
+                        <td style="color: #1A237E; font-weight: 800;">{{ emp.salary }} د.ل</td>
+                        <td class="text-muted small">{{ emp.joined_at|date:"Y-m-d" }}</td>
+                        <td class="text-center">
+                            {% if emp.is_active %}
+                                <span class="status-pill status-active">نشط</span>
+                            {% else %}
+                                <span class="status-pill status-inactive">متوقف</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5 text-muted">لا يوجد موظفون مسجلون حالياً</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addEmployeeModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow" style="border-radius: 25px;">
+            <div class="modal-header border-0 px-4 pt-4">
+                <h5 class="fw-bold" style="color: #1A237E;">تسجيل موظف جديد</h5>
+                <button type="button" class="btn-close ms-0" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">الاسم الكامل</label>
+                        <input type="text" name="name" class="form-control border-light bg-light rounded-3" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">المسمى الوظيفي</label>
+                        <input type="text" name="job_title" class="form-control border-light bg-light rounded-3" required>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-bold">المرتب الشهري</label>
+                            <input type="number" name="salary" class="form-control border-light bg-light rounded-3" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-bold">تاريخ التعيين</label>
+                            <input type="date" name="hire_date" class="form-control border-light bg-light rounded-3" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4">
+                    <button type="submit" class="btn btn-finance w-100 py-3 shadow">حفظ البيانات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

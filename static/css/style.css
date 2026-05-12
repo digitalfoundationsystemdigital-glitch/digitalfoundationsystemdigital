@@ -1,0 +1,60 @@
+:root {
+    --primary-blue: #003366;
+    --glass-sidebar: rgba(0, 51, 102, 0.95);
+    --bg-light: #f4f7f9;
+}
+
+body {
+    background-color: var(--bg-light);
+    font-family: 'Cairo', sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: row-reverse; /* لضمان الشريط الجانبي على اليمين */
+}
+
+/* الشريط الجانبي الزجاجي */
+.sidebar {
+    width: 280px;
+    height: 100vh;
+    background: var(--glass-sidebar);
+    backdrop-filter: blur(10px);
+    position: fixed;
+    right: 0;
+    top: 0;
+    color: white;
+    padding: 20px 0;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+.sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    padding: 15px 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: 0.3s;
+    border-right: 4px solid transparent;
+}
+
+.sidebar .nav-link:hover, .sidebar .nav-link.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-right-color: #FFD700; /* لمسة ذهبية */
+}
+
+/* المحتوى الرئيسي */
+.main-content {
+    margin-right: 280px;
+    width: calc(100% - 280px);
+    padding: 40px;
+}
+
+.glass-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    border: 1px solid rgba(0, 51, 102, 0.05);
+}

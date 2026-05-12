@@ -7,9 +7,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: set SECRET_KEY in production.
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-local-development-key')
 
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.environ.get(
+        'ALLOWED_HOSTS',
+        '127.0.0.1,localhost,digitalsystem.pythonanywhere.com,Digitalsystem.pythonanywhere.com',
+    ).split(',')
+    if host.strip()
+]
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'

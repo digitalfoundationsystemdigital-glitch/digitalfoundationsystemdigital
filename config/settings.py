@@ -13,7 +13,7 @@ ALLOWED_HOSTS = [
     host.strip()
     for host in os.environ.get(
         'ALLOWED_HOSTS',
-        '127.0.0.1,localhost,digitalsystem.pythonanywhere.com,Digitalsystem.pythonanywhere.com',
+        '127.0.0.1,localhost,digitalystem.pythonanywhere.com,digitalsystem.pythonanywhere.com,Digitalsystem.pythonanywhere.com',
     ).split(',')
     if host.strip()
 ]

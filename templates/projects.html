@@ -114,11 +114,59 @@
         font-size: 0.9rem;
         color: #777;
     }
+
+    .projects-page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .project-page-title {
+        color: #003366;
+        margin: 0;
+        font-weight: 800;
+    }
+
+    .add-project-btn {
+        background: #003366;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 700;
+        font-family: 'Cairo';
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-height: 48px;
+        box-shadow: 0 8px 18px rgba(0, 51, 102, 0.18);
+    }
+
+    .add-project-btn:hover {
+        background: #06457f;
+    }
+
+    @media (max-width: 576px) {
+        .projects-page-header {
+            align-items: stretch;
+        }
+
+        .add-project-btn {
+            width: 100%;
+        }
+    }
 </style>
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-    <h2 style="color: #003366; margin: 0;"><i class="fas fa-folder-open"></i> إدارة مشاريع المؤسسة</h2>
-    <button onclick="toggleModal()" style="background: #003366; color: white; border: none; padding: 12px 25px; border-radius: 12px; cursor: pointer; font-weight: 600; font-family: 'Cairo'; display: flex; align-items: center; gap: 10px;">
+<div class="projects-page-header">
+    <h2 class="project-page-title"><i class="fas fa-folder-open"></i> إدارة مشاريع المؤسسة</h2>
+    <button onclick="toggleModal()" class="add-project-btn">
         <i class="fas fa-plus-circle"></i> إضافة مشروع جديد
     </button>
 </div>

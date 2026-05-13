@@ -219,13 +219,14 @@ def finance_summary(request):
 def hr_management(request):
     if request.method == "POST":
         name = request.POST.get('name')
+        national_id = request.POST.get('national_id')
         position = request.POST.get('job_title') 
         salary = request.POST.get('salary')
         phone = request.POST.get('phone')
         joined_at = request.POST.get('hire_date') or timezone.now().date()
         
         Employee.objects.create(
-            name=name, position=position, salary=salary, 
+            name=name, national_id=national_id, position=position, salary=salary, 
             phone=phone, joined_at=joined_at
         )
         messages.success(request, "تم إضافة الموظف بنجاح")

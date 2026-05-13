@@ -134,6 +134,7 @@
                 <thead>
                     <tr>
                         <th style="border-radius: 0 15px 0 0;">اسم الموظف</th>
+                        <th>الرقم الوطني</th>
                         <th>المسمى الوظيفي</th>
                         <th>المرتب الشھري</th>
                         <th>تاريخ التعيين</th>
@@ -144,6 +145,7 @@
                     {% for emp in employees %}
                     <tr>
                         <td class="fw-bold text-dark">{{ emp.name }}</td>
+                        <td class="text-muted small">{{ emp.national_id|default:"-" }}</td>
                         <td>
                             <span class="job-badge">
                                 {{ emp.position }} </span>
@@ -160,7 +162,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" class="text-center py-5 text-muted">لا يوجد موظفون مسجلون حالياً</td>
+                        <td colspan="6" class="text-center py-5 text-muted">لا يوجد موظفون مسجلون حالياً</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -182,6 +184,10 @@
                     <div class="mb-3">
                         <label class="form-label small fw-bold">الاسم الكامل</label>
                         <input type="text" name="name" class="form-control border-light bg-light rounded-3" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">الرقم الوطني</label>
+                        <input type="text" name="national_id" class="form-control border-light bg-light rounded-3" maxlength="20">
                     </div>
                     <div class="mb-3">
                         <label class="form-label small fw-bold">المسمى الوظيفي</label>

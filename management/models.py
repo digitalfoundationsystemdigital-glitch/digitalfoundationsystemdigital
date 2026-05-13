@@ -80,6 +80,7 @@ class Purchase(models.Model):
 class Employee(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=200, verbose_name="اسم الموظف")
+    national_id = models.CharField(max_length=20, null=True, blank=True, verbose_name="الرقم الوطني")
     position = models.CharField(max_length=100, verbose_name="المسمى الوظيفي/التخصص")
     salary = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="المرتب الأساسي")
     phone = models.CharField(max_length=15, null=True, blank=True, verbose_name="رقم التواصل")

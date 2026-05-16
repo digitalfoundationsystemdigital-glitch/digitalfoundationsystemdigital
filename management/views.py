@@ -3,6 +3,7 @@ from django.db.models import Sum, Count
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
+from django.views.decorators.http import require_POST
 from datetime import datetime
 
 # استيراد كافة الجداول المطورة
@@ -252,6 +253,24 @@ def edit_employee(request, pk):
         employee.is_active = request.POST.get('is_active') == 'on'
         employee.save()
         messages.success(request, "تم تحديث بيانات الموظف بنجاح")
+    return redirect('hr_management')
+
+@login_required
+@require_POST
+def delete_employee(request, pk):
+    employee = get_object_or_404(Employee, pk=pk)
+    employee_name = employee.name
+    linked_user = employee.user
+
+    if linked_user and linked_user == request.user:
+        messages.error(request, "لا يمكن حذف حساب المستخدم الحالي أثناء تسجيل الدخول به")
+        return redirect('hr_management')
+
+    employee.delete()
+    if linked_user:
+        linked_user.delete()
+
+    messages.warning(request, f"تم حذف حساب الموظف {employee_name} بنجاح")
     return redirect('hr_management')
 
 # --- 6. الأرشيف الرقمي (تم تعديل الخطأ هنا) ---

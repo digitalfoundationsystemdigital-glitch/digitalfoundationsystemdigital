@@ -30,6 +30,7 @@ urlpatterns = [
     # 4. قسم الموارد البشرية (الموظفين)
     path('hr/', views.hr_management, name='hr_management'),
     path('hr/employees/<int:pk>/edit/', views.edit_employee, name='edit_employee'),
+    path('hr/employees/<int:pk>/delete/', views.delete_employee, name='delete_employee'),
 
     # 5. قسم المالية (الشؤون المالية)
     path('finance/', views.finance_summary, name='finance_summary'),

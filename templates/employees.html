@@ -1,81 +1,96 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 
 <style>
-    /* تحسين الخلفية العامة */
     .main-wrapper {
         background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
         min-height: 100vh;
         padding: 30px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    /* كرت إحصائية الرواتب الزجاجي (نفس نمط المالية) */
+    .glass-stat-card,
+    .glass-panel {
+        background: rgba(255, 255, 255, 0.68);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    }
+
     .glass-stat-card {
-        background: rgba(255, 255, 255, 0.45);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
         border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.7);
-        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.08);
         padding: 20px 30px;
         display: inline-flex;
         align-items: center;
-        margin-bottom: 30px;
+        margin-bottom: 25px;
     }
 
-    /* لوحة الجدول الزجاجية */
     .glass-panel {
-        background: rgba(255, 255, 255, 0.65);
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
         border-radius: 25px;
-        border: 1px solid rgba(255, 255, 255, 0.8);
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
-        padding: 20px;
+        padding: 22px;
     }
 
-    /* تنسيق الجدول المنظم */
+    .section-title {
+        color: #1A237E;
+        font-weight: 800;
+        margin-bottom: 4px;
+    }
+
+    .section-note {
+        color: #6c757d;
+        font-size: 0.88rem;
+        margin-bottom: 0;
+    }
+
     .compact-table {
         width: 100%;
         border-collapse: collapse;
+        min-width: 980px;
     }
 
     .compact-table thead th {
-        background: rgba(26, 35, 126, 0.08); 
-        color: #1A237E; /* اللون النيلي الموحد */
+        background: rgba(26, 35, 126, 0.08);
+        color: #1A237E;
         font-weight: 800;
-        font-size: 0.9rem;
-        padding: 15px;
+        font-size: 0.85rem;
+        padding: 14px;
         border-bottom: 2px solid rgba(26, 35, 126, 0.15);
         text-align: right;
+        white-space: nowrap;
     }
 
     .compact-table tbody td {
-        padding: 14px 15px;
-        font-size: 0.95rem;
+        padding: 14px;
+        font-size: 0.9rem;
         color: #2c3e50;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         vertical-align: middle;
     }
 
-    /* تعديل المسمى الوظيفي ليكون واضحاً جداً */
     .job-badge {
-        background: rgba(26, 35, 126, 0.1); /* خلفية نيلية فاتحة */
-        color: #1A237E !important; /* نص نيلي غامق وواضح */
+        background: rgba(26, 35, 126, 0.1);
+        color: #1A237E !important;
         padding: 5px 12px;
         border-radius: 8px;
-        font-weight: 600;
-        font-size: 0.85rem;
+        font-weight: 700;
+        font-size: 0.82rem;
         border: 1px solid rgba(26, 35, 126, 0.1);
+        display: inline-block;
     }
 
     .status-pill {
         padding: 4px 12px;
         border-radius: 8px;
-        font-size: 0.8rem;
-        font-weight: 600;
+        font-size: 0.78rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 70px;
     }
+
     .status-active { background: #e6fcf5; color: #0ca678; }
     .status-inactive { background: #fff5f5; color: #e03131; }
 
@@ -83,16 +98,33 @@
         background: #1A237E;
         color: white;
         border-radius: 12px;
-        padding: 10px 25px;
+        padding: 10px 22px;
         border: none;
-        font-weight: 600;
-        transition: 0.3s;
+        font-weight: 700;
+        transition: 0.2s ease;
     }
+
     .btn-finance:hover {
         background: #283593;
-        transform: translateY(-2px);
+        transform: translateY(-1px);
         color: white;
     }
+
+    .btn-soft {
+        border: none;
+        border-radius: 10px;
+        width: 38px;
+        height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 3px;
+        transition: 0.2s ease;
+    }
+
+    .btn-edit { background: #e7f5ff; color: #1971c2; }
+    .btn-card { background: #fff3bf; color: #a16207; }
+    .btn-soft:hover { transform: translateY(-1px); }
 
     .icon-box {
         width: 45px;
@@ -105,18 +137,148 @@
         justify-content: center;
         margin-left: 15px;
     }
+
+    .employee-name-cell {
+        min-width: 160px;
+    }
+
+    .employee-email-cell {
+        direction: ltr;
+        text-align: right;
+        color: #495057;
+        min-width: 180px;
+    }
+
+    .id-card-preview {
+        width: 360px;
+        max-width: 100%;
+        margin: 0 auto;
+        background: #ffffff;
+        border: 1px solid #dfe7f3;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(26, 35, 126, 0.12);
+        color: #182033;
+    }
+
+    .id-card-header {
+        background: linear-gradient(135deg, #1A237E 0%, #0B7285 100%);
+        color: white;
+        padding: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .id-card-logo {
+        width: 54px;
+        height: 54px;
+        border-radius: 14px;
+        object-fit: cover;
+        background: rgba(255,255,255,0.2);
+    }
+
+    .id-card-body {
+        padding: 22px;
+        text-align: center;
+    }
+
+    .id-avatar {
+        width: 82px;
+        height: 82px;
+        border-radius: 50%;
+        background: #eef3ff;
+        color: #1A237E;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin-bottom: 12px;
+        border: 4px solid #fff;
+        box-shadow: 0 8px 20px rgba(26, 35, 126, 0.12);
+    }
+
+    .id-card-name {
+        color: #1A237E;
+        font-weight: 800;
+        margin-bottom: 4px;
+        font-size: 1.3rem;
+    }
+
+    .id-card-position {
+        color: #0B7285;
+        font-weight: 700;
+        margin-bottom: 18px;
+    }
+
+    .id-card-detail {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        border-top: 1px solid #edf2f7;
+        padding: 10px 0;
+        font-size: 0.9rem;
+    }
+
+    .id-card-detail span:first-child {
+        color: #6c757d;
+        white-space: nowrap;
+    }
+
+    .id-card-detail span:last-child {
+        font-weight: 700;
+        color: #25324a;
+        overflow-wrap: anywhere;
+        text-align: left;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 12px;
+        border-color: #edf0f5;
+        background: #f8f9fb;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #1A237E;
+        box-shadow: 0 0 0 0.18rem rgba(26, 35, 126, 0.12);
+    }
+
+    @media (max-width: 768px) {
+        .main-wrapper {
+            padding: 18px;
+        }
+
+        .page-actions {
+            width: 100%;
+        }
+
+        .page-actions .btn-finance {
+            width: 100%;
+        }
+    }
 </style>
 
 <div class="main-wrapper text-end" dir="rtl">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-4">
         <div>
-            <h3 style="color: #1A237E; font-weight: 800; margin-bottom: 5px;">إدارة الموارد البشرية</h3>
-            <p class="text-muted small">تنظيم بيانات الموظفين والالتزامات المالية</p>
+            <h3 class="section-title">إدارة الموارد البشرية</h3>
+            <p class="section-note">إضافة الموظفين ومتابعة بياناتهم الوظيفية والمالية</p>
         </div>
-        <button class="btn btn-finance shadow-sm" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
-            <i class="fas fa-plus-circle ms-1"></i> إضافة موظف جديد
-        </button>
+        <div class="page-actions">
+            <button class="btn btn-finance shadow-sm" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+                <i class="fas fa-plus-circle ms-1"></i> إضافة موظف جديد
+            </button>
+        </div>
     </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} shadow-sm border-0 rounded-4">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
 
     <div class="glass-stat-card">
         <div class="icon-box shadow-sm">
@@ -129,40 +291,59 @@
     </div>
 
     <div class="glass-panel">
+        <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-3">
+            <div>
+                <h4 class="section-title">شؤون الموظفين</h4>
+                <p class="section-note">كل موظف تظهر بياناته ويمكن تعديلها أو إصدار بطاقة له</p>
+            </div>
+        </div>
+
         <div class="table-responsive">
             <table class="compact-table">
                 <thead>
                     <tr>
                         <th style="border-radius: 0 15px 0 0;">اسم الموظف</th>
                         <th>الرقم الوطني</th>
+                        <th>البريد الإلكتروني</th>
+                        <th>الهاتف</th>
                         <th>المسمى الوظيفي</th>
-                        <th>المرتب الشھري</th>
+                        <th>المرتب الشهري</th>
                         <th>تاريخ التعيين</th>
-                        <th class="text-center" style="border-radius: 15px 0 0 0;">الحالة</th>
+                        <th>الحالة</th>
+                        <th class="text-center" style="border-radius: 15px 0 0 0;">الإجراءات</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for emp in employees %}
                     <tr>
-                        <td class="fw-bold text-dark">{{ emp.name }}</td>
+                        <td class="fw-bold text-dark employee-name-cell">{{ emp.name }}</td>
                         <td class="text-muted small">{{ emp.national_id|default:"-" }}</td>
+                        <td class="employee-email-cell">{{ emp.email|default:"-" }}</td>
+                        <td class="text-muted small">{{ emp.phone|default:"-" }}</td>
                         <td>
-                            <span class="job-badge">
-                                {{ emp.position }} </span>
+                            <span class="job-badge">{{ emp.position }}</span>
                         </td>
                         <td style="color: #1A237E; font-weight: 800;">{{ emp.salary }} د.ل</td>
                         <td class="text-muted small">{{ emp.joined_at|date:"Y-m-d" }}</td>
-                        <td class="text-center">
+                        <td>
                             {% if emp.is_active %}
                                 <span class="status-pill status-active">نشط</span>
                             {% else %}
                                 <span class="status-pill status-inactive">متوقف</span>
                             {% endif %}
                         </td>
+                        <td class="text-center">
+                            <button type="button" class="btn-soft btn-edit" title="تعديل بيانات الموظف" data-bs-toggle="modal" data-bs-target="#editEmployeeModal{{ emp.id }}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button type="button" class="btn-soft btn-card" title="بطاقة الموظف" data-bs-toggle="modal" data-bs-target="#employeeCardModal{{ emp.id }}">
+                                <i class="fas fa-id-card"></i>
+                            </button>
+                        </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6" class="text-center py-5 text-muted">لا يوجد موظفون مسجلون حالياً</td>
+                        <td colspan="9" class="text-center py-5 text-muted">لا يوجد موظفون مسجلون حالياً</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -172,44 +353,280 @@
 </div>
 
 <div class="modal fade" id="addEmployeeModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow" style="border-radius: 25px;">
             <div class="modal-header border-0 px-4 pt-4">
                 <h5 class="fw-bold" style="color: #1A237E;">تسجيل موظف جديد</h5>
                 <button type="button" class="btn-close ms-0" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST">
+            <form method="POST" action="{% url 'hr_management' %}">
                 {% csrf_token %}
                 <div class="modal-body p-4">
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">الاسم الكامل</label>
-                        <input type="text" name="name" class="form-control border-light bg-light rounded-3" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">الرقم الوطني</label>
-                        <input type="text" name="national_id" class="form-control border-light bg-light rounded-3" maxlength="20" inputmode="numeric" placeholder="أدخل الرقم الوطني">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">المسمى الوظيفي</label>
-                        <input type="text" name="job_title" class="form-control border-light bg-light rounded-3" required>
-                    </div>
                     <div class="row g-3">
-                        <div class="col-6">
-                            <label class="form-label small fw-bold">المرتب الشهري</label>
-                            <input type="number" name="salary" class="form-control border-light bg-light rounded-3" required>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">الاسم الكامل</label>
+                            <input type="text" name="name" class="form-control" required>
                         </div>
-                        <div class="col-6">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">الرقم الوطني</label>
+                            <input type="text" name="national_id" class="form-control" maxlength="20" inputmode="numeric" placeholder="أدخل الرقم الوطني">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">البريد الإلكتروني</label>
+                            <input type="email" name="email" class="form-control" placeholder="employee@example.com">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">رقم الهاتف</label>
+                            <input type="text" name="phone" class="form-control" maxlength="15" inputmode="tel">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">المسمى الوظيفي</label>
+                            <input type="text" name="job_title" class="form-control" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold">المرتب الشهري</label>
+                            <input type="number" name="salary" class="form-control" min="0" step="0.01" required>
+                        </div>
+                        <div class="col-md-3">
                             <label class="form-label small fw-bold">تاريخ التعيين</label>
-                            <input type="date" name="hire_date" class="form-control border-light bg-light rounded-3" required>
+                            <input type="date" name="hire_date" class="form-control" required>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check form-switch d-inline-flex align-items-center gap-2">
+                                <input class="form-check-input" type="checkbox" role="switch" name="is_active" id="addEmployeeActive" checked>
+                                <label class="form-check-label fw-bold small" for="addEmployeeActive">على رأس العمل</label>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer border-0 p-4">
-                    <button type="submit" class="btn btn-finance w-100 py-3 shadow">حفظ البيانات</button>
+                    <button type="submit" class="btn btn-finance w-100 py-3 shadow">حفظ بيانات الموظف</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+{% for emp in employees %}
+<div class="modal fade" id="editEmployeeModal{{ emp.id }}" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow" style="border-radius: 25px;">
+            <div class="modal-header border-0 px-4 pt-4">
+                <h5 class="fw-bold" style="color: #1A237E;">تعديل بيانات {{ emp.name }}</h5>
+                <button type="button" class="btn-close ms-0" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{% url 'edit_employee' emp.id %}">
+                {% csrf_token %}
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">الاسم الكامل</label>
+                            <input type="text" name="name" class="form-control" value="{{ emp.name }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">الرقم الوطني</label>
+                            <input type="text" name="national_id" class="form-control" value="{{ emp.national_id|default:'' }}" maxlength="20" inputmode="numeric">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">البريد الإلكتروني</label>
+                            <input type="email" name="email" class="form-control" value="{{ emp.email|default:'' }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">رقم الهاتف</label>
+                            <input type="text" name="phone" class="form-control" value="{{ emp.phone|default:'' }}" maxlength="15" inputmode="tel">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">المسمى الوظيفي</label>
+                            <input type="text" name="job_title" class="form-control" value="{{ emp.position }}" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold">المرتب الشهري</label>
+                            <input type="number" name="salary" class="form-control" value="{{ emp.salary }}" min="0" step="0.01" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold">تاريخ التعيين</label>
+                            <input type="date" name="hire_date" class="form-control" value="{{ emp.joined_at|date:'Y-m-d' }}" required>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check form-switch d-inline-flex align-items-center gap-2">
+                                <input class="form-check-input" type="checkbox" role="switch" name="is_active" id="employeeActive{{ emp.id }}" {% if emp.is_active %}checked{% endif %}>
+                                <label class="form-check-label fw-bold small" for="employeeActive{{ emp.id }}">على رأس العمل</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4">
+                    <button type="submit" class="btn btn-finance w-100 py-3 shadow">حفظ التعديلات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="employeeCardModal{{ emp.id }}" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow" style="border-radius: 25px;">
+            <div class="modal-header border-0 px-4 pt-4">
+                <h5 class="fw-bold" style="color: #1A237E;">بطاقة الموظف</h5>
+                <button type="button" class="btn-close ms-0" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="id-card-preview" id="employee-card-{{ emp.id }}">
+                    <div class="id-card-header">
+                        <div class="text-start">
+                            <div style="font-weight: 800;">المؤسسة الرقمية</div>
+                            <small>بطاقة موظف</small>
+                        </div>
+                        <img src="{% static 'img/image_740359.jpg' %}" class="id-card-logo" alt="شعار المؤسسة">
+                    </div>
+                    <div class="id-card-body">
+                        <div class="id-avatar"><i class="fas fa-user-tie"></i></div>
+                        <div class="id-card-name">{{ emp.name }}</div>
+                        <div class="id-card-position">{{ emp.position }}</div>
+                        <div class="id-card-detail">
+                            <span>الرقم الوطني</span>
+                            <span>{{ emp.national_id|default:"-" }}</span>
+                        </div>
+                        <div class="id-card-detail">
+                            <span>البريد</span>
+                            <span dir="ltr">{{ emp.email|default:"-" }}</span>
+                        </div>
+                        <div class="id-card-detail">
+                            <span>الهاتف</span>
+                            <span>{{ emp.phone|default:"-" }}</span>
+                        </div>
+                        <div class="id-card-detail">
+                            <span>تاريخ التعيين</span>
+                            <span>{{ emp.joined_at|date:"Y-m-d" }}</span>
+                        </div>
+                        <div class="id-card-detail">
+                            <span>الحالة</span>
+                            <span>{% if emp.is_active %}نشط{% else %}متوقف{% endif %}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 p-4">
+                <button type="button" class="btn btn-finance w-100 py-3 shadow" onclick="printEmployeeCard('employee-card-{{ emp.id }}')">
+                    <i class="fas fa-print ms-1"></i> طباعة البطاقة
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<script>
+    function printEmployeeCard(cardId) {
+        const card = document.getElementById(cardId);
+        if (!card) return;
+
+        const printWindow = window.open('', '_blank', 'width=520,height=680');
+        printWindow.document.write(`
+            <!DOCTYPE html>
+            <html lang="ar" dir="rtl">
+            <head>
+                <meta charset="UTF-8">
+                <title>بطاقة موظف</title>
+                <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+                <style>
+                    body {
+                        margin: 0;
+                        min-height: 100vh;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        background: #f4f7fb;
+                        font-family: 'Cairo', sans-serif;
+                    }
+                    .id-card-preview {
+                        width: 360px;
+                        background: #ffffff;
+                        border: 1px solid #dfe7f3;
+                        border-radius: 18px;
+                        overflow: hidden;
+                        box-shadow: 0 15px 35px rgba(26, 35, 126, 0.12);
+                        color: #182033;
+                    }
+                    .id-card-header {
+                        background: linear-gradient(135deg, #1A237E 0%, #0B7285 100%);
+                        color: white;
+                        padding: 18px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        gap: 12px;
+                    }
+                    .id-card-logo {
+                        width: 54px;
+                        height: 54px;
+                        border-radius: 14px;
+                        object-fit: cover;
+                        background: rgba(255,255,255,0.2);
+                    }
+                    .id-card-body {
+                        padding: 22px;
+                        text-align: center;
+                    }
+                    .id-avatar {
+                        width: 82px;
+                        height: 82px;
+                        border-radius: 50%;
+                        background: #eef3ff;
+                        color: #1A237E;
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 2rem;
+                        margin-bottom: 12px;
+                        border: 4px solid #fff;
+                        box-shadow: 0 8px 20px rgba(26, 35, 126, 0.12);
+                    }
+                    .id-card-name {
+                        color: #1A237E;
+                        font-weight: 800;
+                        margin-bottom: 4px;
+                        font-size: 1.3rem;
+                    }
+                    .id-card-position {
+                        color: #0B7285;
+                        font-weight: 700;
+                        margin-bottom: 18px;
+                    }
+                    .id-card-detail {
+                        display: flex;
+                        justify-content: space-between;
+                        gap: 12px;
+                        border-top: 1px solid #edf2f7;
+                        padding: 10px 0;
+                        font-size: 0.9rem;
+                    }
+                    .id-card-detail span:first-child {
+                        color: #6c757d;
+                        white-space: nowrap;
+                    }
+                    .id-card-detail span:last-child {
+                        font-weight: 700;
+                        color: #25324a;
+                        overflow-wrap: anywhere;
+                        text-align: left;
+                    }
+                    @media print {
+                        body { background: #fff; }
+                        .id-card-preview { box-shadow: none; }
+                    }
+                </style>
+            </head>
+            <body>${card.outerHTML}</body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.onload = function() {
+            printWindow.print();
+        };
+    }
+</script>
 
 {% endblock %}

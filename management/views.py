@@ -220,21 +220,39 @@ def hr_management(request):
     if request.method == "POST":
         name = request.POST.get('name')
         national_id = request.POST.get('national_id')
+        email = request.POST.get('email')
         position = request.POST.get('job_title') 
-        salary = request.POST.get('salary')
+        salary = request.POST.get('salary') or 0
         phone = request.POST.get('phone')
         joined_at = request.POST.get('hire_date') or timezone.now().date()
+        is_active = request.POST.get('is_active') == 'on'
         
         Employee.objects.create(
-            name=name, national_id=national_id, position=position, salary=salary, 
-            phone=phone, joined_at=joined_at
+            name=name, national_id=national_id, email=email, position=position,
+            salary=salary, phone=phone, joined_at=joined_at, is_active=is_active
         )
         messages.success(request, "تم إضافة الموظف بنجاح")
         return redirect('hr_management')
 
-    employees = Employee.objects.all()
+    employees = Employee.objects.all().order_by('name')
     total_salaries = employees.filter(is_active=True).aggregate(Sum('salary'))['salary__sum'] or 0
     return render(request, 'employees.html', {'employees': employees, 'total_salaries': total_salaries})
+
+@login_required
+def edit_employee(request, pk):
+    employee = get_object_or_404(Employee, pk=pk)
+    if request.method == "POST":
+        employee.name = request.POST.get('name')
+        employee.national_id = request.POST.get('national_id')
+        employee.email = request.POST.get('email')
+        employee.position = request.POST.get('job_title')
+        employee.salary = request.POST.get('salary') or 0
+        employee.phone = request.POST.get('phone')
+        employee.joined_at = request.POST.get('hire_date') or employee.joined_at
+        employee.is_active = request.POST.get('is_active') == 'on'
+        employee.save()
+        messages.success(request, "تم تحديث بيانات الموظف بنجاح")
+    return redirect('hr_management')
 
 # --- 6. الأرشيف الرقمي (تم تعديل الخطأ هنا) ---
 @login_required

@@ -57,7 +57,8 @@ def edit_project(request, pk):
         project.save()
         messages.success(request, "تم تحديث المشروع بنجاح")
         return redirect('projects_list')
-    return render(request, 'edit_project.html', {'project': project})
+    status_choices = Project._meta.get_field('status').choices
+    return render(request, 'edit_project.html', {'project': project, 'status_choices': status_choices})
 
 @login_required
 def delete_project(request, pk):

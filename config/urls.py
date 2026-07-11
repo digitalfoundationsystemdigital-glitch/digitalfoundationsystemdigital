@@ -4,6 +4,9 @@ from django.contrib.auth.views import LoginView, LogoutView
 from management.views import dashboard
 from django.conf import settings
 from django.conf.urls.static import static
+from .admin_custom import configure_admin_site
+
+configure_admin_site()
 
 urlpatterns = [
     path('admin/', admin.site.urls),

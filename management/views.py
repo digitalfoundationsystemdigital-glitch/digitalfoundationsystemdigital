@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum, Count
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from django.views.decorators.http import require_POST
@@ -8,9 +7,21 @@ from datetime import datetime
 
 # استيراد كافة الجداول المطورة
 from .models import Project, Customer, Order, Employee, Finance, Purchase, DigitalArchive
+from .permissions import (
+    SECTION_ARCHIVE,
+    SECTION_CUSTOMERS,
+    SECTION_DASHBOARD,
+    SECTION_FINANCE,
+    SECTION_HR,
+    SECTION_ORDERS,
+    SECTION_PROJECTS,
+    SECTION_PURCHASES,
+    SECTION_REPORTS,
+    section_required,
+)
 
 # --- 0. لوحة التحكم الرئيسية ---
-@login_required
+@section_required(SECTION_DASHBOARD)
 def dashboard(request):
     context = {
         'projects_count': Project.objects.count(), 
@@ -23,7 +34,7 @@ def dashboard(request):
     return render(request, 'dashboard.html', context)
 
 # --- 1. قسم إدارة المشاريع ---
-@login_required
+@section_required(SECTION_PROJECTS)
 def projects_list(request):
     if request.method == "POST":
         name = request.POST.get('name')
@@ -43,7 +54,7 @@ def projects_list(request):
     projects = Project.objects.all().order_by('-start_date')
     return render(request, 'projects.html', {'projects': projects})
 
-@login_required
+@section_required(SECTION_PROJECTS)
 def edit_project(request, pk):
     project = get_object_or_404(Project, pk=pk)
     if request.method == "POST":
@@ -60,7 +71,7 @@ def edit_project(request, pk):
     status_choices = Project._meta.get_field('status').choices
     return render(request, 'edit_project.html', {'project': project, 'status_choices': status_choices})
 
-@login_required
+@section_required(SECTION_PROJECTS)
 def delete_project(request, pk):
     project = get_object_or_404(Project, pk=pk)
     project.delete()
@@ -68,7 +79,7 @@ def delete_project(request, pk):
     return redirect('projects_list')
 
 # --- 2. قسم إدارة الطلبات ---
-@login_required
+@section_required(SECTION_ORDERS)
 def customer_orders(request):
     if request.method == "POST":
         manual_name = request.POST.get('manual_customer_name')
@@ -99,7 +110,7 @@ def customer_orders(request):
     orders = Order.objects.all().order_by('-created_at')
     return render(request, 'orders.html', {'orders': orders})
 
-@login_required
+@section_required(SECTION_ORDERS)
 def update_order_status(request, pk, status):
     order = get_object_or_404(Order, pk=pk)
     order.status = status 
@@ -107,7 +118,7 @@ def update_order_status(request, pk, status):
     messages.info(request, f"تم تحديث الحالة: {order.get_status_display()}")
     return redirect('customer_orders')
 
-@login_required
+@section_required(SECTION_ORDERS)
 def edit_order(request, pk):
     order = get_object_or_404(Order, pk=pk)
     if request.method == "POST":
@@ -129,7 +140,7 @@ def edit_order(request, pk):
         return redirect('customer_orders')
     return render(request, 'edit_order.html', {'order': order})
 
-@login_required
+@section_required(SECTION_ORDERS)
 def delete_order(request, pk):
     order = get_object_or_404(Order, pk=pk)
     order.delete()
@@ -137,7 +148,7 @@ def delete_order(request, pk):
     return redirect('customer_orders')
 
 # --- 3. قسم إدارة الزبائن ---
-@login_required
+@section_required(SECTION_CUSTOMERS)
 def customers_list(request):
     if request.method == "POST":
         name = request.POST.get('name')
@@ -150,7 +161,7 @@ def customers_list(request):
     customers = Customer.objects.all().order_by('name')
     return render(request, 'customers.html', {'customers': customers})
 
-@login_required
+@section_required(SECTION_CUSTOMERS)
 def customer_detail(request, pk):
     customer = get_object_or_404(Customer, pk=pk)
     customer_orders = Order.objects.filter(manual_customer_name=customer.name).order_by('-created_at')
@@ -161,7 +172,7 @@ def customer_detail(request, pk):
     }
     return render(request, 'customer_detail.html', context)
 
-@login_required
+@section_required(SECTION_CUSTOMERS)
 def delete_customer(request, pk):
     customer = get_object_or_404(Customer, pk=pk)
     customer.delete()
@@ -169,7 +180,7 @@ def delete_customer(request, pk):
     return redirect('customers_list')
 
 # --- 4. الشؤون المالية ---
-@login_required
+@section_required(SECTION_PURCHASES)
 def purchases_list(request):
     if request.method == "POST":
         item_name = request.POST.get('item_name')
@@ -196,7 +207,7 @@ def purchases_list(request):
     total_spent = purchases.aggregate(Sum('price'))['price__sum'] or 0
     return render(request, 'purchases.html', {'purchases': purchases, 'orders': orders, 'total_spent': total_spent})
 
-@login_required
+@section_required(SECTION_FINANCE)
 def finance_summary(request):
     total_income = Order.objects.filter(status='completed').aggregate(Sum('price'))['price__sum'] or 0
     total_expenses = Purchase.objects.aggregate(Sum('price'))['price__sum'] or 0
@@ -217,7 +228,7 @@ def finance_summary(request):
     return render(request, 'finance.html', context)
 
 # --- 5. الموارد البشرية ---
-@login_required
+@section_required(SECTION_HR)
 def hr_management(request):
     if request.method == "POST":
         name = request.POST.get('name')
@@ -240,7 +251,7 @@ def hr_management(request):
     total_salaries = employees.filter(is_active=True).aggregate(Sum('salary'))['salary__sum'] or 0
     return render(request, 'employees.html', {'employees': employees, 'total_salaries': total_salaries})
 
-@login_required
+@section_required(SECTION_HR)
 def edit_employee(request, pk):
     employee = get_object_or_404(Employee, pk=pk)
     if request.method == "POST":
@@ -256,7 +267,7 @@ def edit_employee(request, pk):
         messages.success(request, "تم تحديث بيانات الموظف بنجاح")
     return redirect('hr_management')
 
-@login_required
+@section_required(SECTION_HR)
 @require_POST
 def delete_employee(request, pk):
     employee = get_object_or_404(Employee, pk=pk)
@@ -275,7 +286,7 @@ def delete_employee(request, pk):
     return redirect('hr_management')
 
 # --- 6. الأرشيف الرقمي (تم تعديل الخطأ هنا) ---
-@login_required
+@section_required(SECTION_ARCHIVE)
 def digital_archive(request):
     if request.method == "POST":
         title = request.POST.get('title')
@@ -303,7 +314,7 @@ def digital_archive(request):
     return render(request, 'archive.html', {'archived_files': archives, 'orders': orders})
 
 # --- 7. التقارير والإحصائيات ---
-@login_required
+@section_required(SECTION_REPORTS)
 def reports_view(request):
     order_stats = Order.objects.values('status').annotate(count=Count('id'))
     project_stats = Project.objects.values('status').annotate(count=Count('id'))

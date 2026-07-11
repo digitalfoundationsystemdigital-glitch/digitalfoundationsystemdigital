@@ -169,30 +169,46 @@
             <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
                 <i class="fas fa-th-large"></i> لوحة التحكم
             </a>
+            {% if 'projects' in allowed_sections %}
             <a href="{% url 'projects_list' %}" class="nav-link {% if request.resolver_match.url_name == 'projects_list' %}active{% endif %}">
                 <i class="fas fa-project-diagram"></i> إدارة المشاريع
             </a>
+            {% endif %}
+            {% if 'orders' in allowed_sections %}
             <a href="{% url 'customer_orders' %}" class="nav-link {% if request.resolver_match.url_name == 'customer_orders' %}active{% endif %}">
                 <i class="fas fa-shopping-cart"></i> الطلبات
             </a>
+            {% endif %}
+            {% if 'customers' in allowed_sections %}
             <a href="{% url 'customers_list' %}" class="nav-link {% if request.resolver_match.url_name == 'customers_list' %}active{% endif %}">
                 <i class="fas fa-user-friends"></i> إدارة الزبائن
             </a>
+            {% endif %}
+            {% if 'purchases' in allowed_sections %}
             <a href="{% url 'purchases_list' %}" class="nav-link {% if request.resolver_match.url_name == 'purchases_list' %}active{% endif %}">
                 <i class="fas fa-shopping-basket"></i> قسم المشتريات
             </a>
+            {% endif %}
+            {% if 'finance' in allowed_sections %}
             <a href="{% url 'finance_summary' %}" class="nav-link {% if request.resolver_match.url_name == 'finance_summary' %}active{% endif %}">
                 <i class="fas fa-wallet"></i> الشؤون المالية
             </a>
+            {% endif %}
+            {% if 'hr' in allowed_sections %}
             <a href="{% url 'hr_management' %}" class="nav-link {% if request.resolver_match.url_name == 'hr_management' %}active{% endif %}">
                 <i class="fas fa-user-tie"></i> الموارد البشرية
             </a>
+            {% endif %}
+            {% if 'archive' in allowed_sections %}
             <a href="{% url 'digital_archive' %}" class="nav-link {% if request.resolver_match.url_name == 'digital_archive' %}active{% endif %}">
                 <i class="fas fa-archive"></i> الأرشيف الرقمي
             </a>
+            {% endif %}
+            {% if 'reports' in allowed_sections %}
             <a href="{% url 'reports_view' %}" class="nav-link {% if request.resolver_match.url_name == 'reports_view' %}active{% endif %}">
                 <i class="fas fa-chart-bar"></i> التقارير والإحصائيات
             </a>
+            {% endif %}
         </nav>
     </aside>
 

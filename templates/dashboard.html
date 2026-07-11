@@ -7,6 +7,7 @@
 </header>
 
 <div class="row g-4 mb-4">
+    {% if 'projects' in allowed_sections %}
     <div class="col-md-3">
         <div class="glass-panel p-4 text-center">
             <div style="color: #003366; font-size: 2rem;" class="mb-2"><i class="fas fa-project-diagram"></i></div>
@@ -14,6 +15,9 @@
             <h2 class="fw-bold">{{ projects_count }}</h2>
         </div>
     </div>
+    {% endif %}
+
+    {% if 'hr' in allowed_sections %}
     <div class="col-md-3">
         <div class="glass-panel p-4 text-center">
             <div style="color: #c0392b; font-size: 2rem;" class="mb-2"><i class="fas fa-user-tie"></i></div>
@@ -21,6 +25,9 @@
             <h2 class="fw-bold">{{ employees_count }}</h2>
         </div>
     </div>
+    {% endif %}
+
+    {% if 'finance' in allowed_sections %}
     <div class="col-md-3">
         <div class="glass-panel p-4 text-center">
             <div style="color: #27ae60; font-size: 2rem;" class="mb-2"><i class="fas fa-wallet"></i></div>
@@ -28,16 +35,21 @@
             <h2 class="fw-bold">{{ total_finance }}</h2>
         </div>
     </div>
+    {% endif %}
+
+    {% if 'orders' in allowed_sections %}
     <div class="col-md-3">
         <div class="glass-panel p-4 text-center">
             <div style="color: #f39c12; font-size: 2rem;" class="mb-2"><i class="fas fa-shopping-cart"></i></div>
-            <h6 class="text-muted">الطلبات (الأصناف)</h6>
+            <h6 class="text-muted">الطلبات</h6>
             <h2 class="fw-bold">{{ orders_count }}</h2>
         </div>
     </div>
+    {% endif %}
 </div>
 
 <div class="row g-4 mb-5">
+    {% if 'customers' in allowed_sections %}
     <div class="col-md-6">
         <div class="glass-panel p-4 d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center">
@@ -52,6 +64,9 @@
             <a href="{% url 'customers_list' %}" class="btn btn-sm btn-outline-primary rounded-pill">عرض الكل</a>
         </div>
     </div>
+    {% endif %}
+
+    {% if 'archive' in allowed_sections %}
     <div class="col-md-6">
         <div class="glass-panel p-4 d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center">
@@ -66,7 +81,6 @@
             <a href="{% url 'digital_archive' %}" class="btn btn-sm btn-outline-secondary rounded-pill">دخول الأرشيف</a>
         </div>
     </div>
+    {% endif %}
 </div>
-
-      
 {% endblock %}

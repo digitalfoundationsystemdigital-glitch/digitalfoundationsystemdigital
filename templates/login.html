@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل الدخول | منظومة المؤسسة الرقمية</title>
+    <title>دخول الموظف | منظومة المؤسسة الرقمية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
@@ -175,17 +175,17 @@
             <div>
                 <img class="brand-logo" src="{% static 'img/image_740359.jpg' %}" alt="شعار المؤسسة">
                 <h1>منظومة المؤسسة الرقمية</h1>
-                <p>بوابة الدخول إلى لوحة التحكم وإدارة المشاريع والطلبات والمالية والموارد البشرية.</p>
+                <p>بوابة دخول الموظفين إلى المنظومة مع صلاحيات محدودة حسب الدور.</p>
             </div>
             <div class="mt-5">
                 <i class="fas fa-shield-alt ms-2" style="color: var(--accent-gold);"></i>
-                دخول آمن للمستخدمين المعتمدين
+                دخول الموظف فقط
             </div>
         </div>
 
         <div class="login-panel">
-            <h2>تسجيل الدخول</h2>
-            <p class="subtitle">استخدم بيانات المستخدم الخاصة بالمنظومة.</p>
+            <h2>دخول الموظف</h2>
+            <p class="subtitle">اسم المستخدم وكلمة المرور للحساب العادي داخل النظام.</p>
 
             {% if form.errors %}
                 <div class="alert alert-danger">
@@ -222,8 +222,13 @@
 
                 <button class="btn btn-login w-100" type="submit">
                     <i class="fas fa-arrow-left ms-2"></i>
-                    دخول إلى لوحة التحكم
+                    دخول الموظف
                 </button>
+                <div class="text-center mt-4">
+                    <a href="{% url 'admin_login' %}" class="text-decoration-none" style="color: var(--primary-blue); font-weight: 700;">
+                        دخول مدير النظام
+                    </a>
+                </div>
             </form>
         </div>
     </section>

@@ -18,7 +18,7 @@ ALLOWED_HOSTS = [
     if host.strip()
 ]
 
-LOGIN_URL = '/login/'
+LOGIN_URL = '/login/employee/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login/'
 

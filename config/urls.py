@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LogoutView
 from management.views import dashboard
+from management.auth_views import AdminLoginView, AuthPortalView, EmployeeLoginView
 from django.conf import settings
 from django.conf.urls.static import static
 from .admin_custom import configure_admin_site
@@ -10,7 +11,9 @@ configure_admin_site()
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('login/', LoginView.as_view(template_name='login.html', redirect_authenticated_user=True), name='login'),
+    path('login/', AuthPortalView.as_view(), name='login'),
+    path('login/employee/', EmployeeLoginView.as_view(), name='employee_login'),
+    path('login/admin/', AdminLoginView.as_view(), name='admin_login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('', dashboard, name='dashboard'),
     path('management/', include('management.urls')), 

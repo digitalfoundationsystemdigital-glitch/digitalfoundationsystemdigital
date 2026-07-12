@@ -94,3 +94,10 @@ class ViewPermissionTests(TestCase):
             "reports_view",
         ):
             self.assertCanOpen(self.manager, url_name)
+
+
+class AuthPageTests(TestCase):
+    def test_auth_pages_open(self):
+        self.assertEqual(self.client.get(reverse("login")).status_code, 200)
+        self.assertEqual(self.client.get(reverse("employee_login")).status_code, 200)
+        self.assertEqual(self.client.get(reverse("admin_login")).status_code, 200)
